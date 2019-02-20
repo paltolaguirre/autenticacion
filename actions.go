@@ -6,27 +6,20 @@ import (
    // "log"
   //  "github.com/gorilla/mux"
  //   "encoding/json"
-  	"github.com/jinzhu/gorm"
+  	//"github.com/jinzhu/gorm"
   _ "github.com/jinzhu/gorm/dialects/postgres"
   	"time"
  //   "github.com/xubiosueldos/conexionBD"
-  
+  	"github.com/xubiosueldos/autenticacion/publico"
 )
 
 
-type TokenAutenticacion struct {
-	gorm.Model
-	Username string
-	Pass string
-	Tenant string
-	Token string
-	FechaCreacion time.Time
-}
+
 
 
 //var db *gorm.DB
 var err error
-var m = make(map[string] TokenAutenticacion)
+var m = make(map[string] publico.TokenAutenticacion)
 var empty struct{}
 
 func Login(w http.ResponseWriter, r *http.Request){
@@ -38,7 +31,7 @@ func Login(w http.ResponseWriter, r *http.Request){
 	token := time.Now().Format("2006-01-02 15:04:05.000000")
 	fecha := time.Now()
 
-	autenticacion := TokenAutenticacion{Username: username, Pass: pass, Tenant: tenant, Token: token, FechaCreacion: fecha}
+	autenticacion := publico.TokenAutenticacion{Username: username, Pass: pass, Tenant: tenant, Token: token, FechaCreacion: fecha}
 
 	//VER COMO PREGUNTAR SI EL TOKEN YA ESTA INGRESADO EN EL HASHMAP
 	m[string(token)] = autenticacion
