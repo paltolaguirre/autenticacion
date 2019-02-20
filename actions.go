@@ -40,7 +40,7 @@ func Login(w http.ResponseWriter, r *http.Request){
 }
 
 
-func CheckToken(r*http.Request)(bool){
+func CheckToken(w http.ResponseWriter, r *http.Request){
 
 	header := r.Header
 
@@ -50,7 +50,7 @@ func CheckToken(r*http.Request)(bool){
 
 	_,ok := m[token]
 	
-	return ok
+	fmt.Println(ok)
 }
 
 

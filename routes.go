@@ -38,13 +38,13 @@ var routes = Routes{
 		"GET",
 		"/logout",
 		Logout,
-	},
+	},*/
 	Route{
 		"CheckToken",
 		"GET",
 		"/check-token",
 		CheckToken,
 	},
-*/
+
 
 }
