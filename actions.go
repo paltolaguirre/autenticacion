@@ -5,7 +5,7 @@ import (
     "net/http"
    // "log"
   //  "github.com/gorilla/mux"
- //   "encoding/json"
+    "encoding/json"
   	//"github.com/jinzhu/gorm"
   _ "github.com/jinzhu/gorm/dialects/postgres"
   	"time"
@@ -48,9 +48,12 @@ func CheckToken(w http.ResponseWriter, r *http.Request){
 
 	fmt.Println(m[token])
 
-	_,ok := m[token]
-	
-	fmt.Println(ok)
-}
+	tokenAutenticacion,ok := m[token]
+	if(ok){
+		w.Header().Set("Content-Type", "application-json")
+		w.WriteHeader(202)
 
+		json.NewEncoder(w).Encode(tokenAutenticacion)
+	}
+}
 
