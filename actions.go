@@ -20,7 +20,7 @@ import (
 //var db *gorm.DB
 var err error
 var m = make(map[string] publico.TokenAutenticacion)
-var empty struct{}
+var errors publico.Error
 
 func Login(w http.ResponseWriter, r *http.Request){
 
@@ -49,11 +49,21 @@ func CheckToken(w http.ResponseWriter, r *http.Request){
 	fmt.Println(m[token])
 
 	tokenAutenticacion,ok := m[token]
+
 	if(ok){
 		w.Header().Set("Content-Type", "application-json")
-		w.WriteHeader(202)
+		w.WriteHeader(200)
 
 		json.NewEncoder(w).Encode(tokenAutenticacion)
+	} else 
+	{
+		errors = publico.Error{ErrorNombre: "Hubo error", ErrorCodigo: "400"}
+
+		w.Header().Set("Content-Type", "application-json")
+		w.WriteHeader(400)
+
+		json.NewEncoder(w).Encode(errors)
 	}
 }
+
 
