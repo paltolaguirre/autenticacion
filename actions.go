@@ -57,7 +57,7 @@ func CheckToken(w http.ResponseWriter, r *http.Request){
 		json.NewEncoder(w).Encode(tokenAutenticacion)
 	} else 
 	{
-		errors = publico.Error{ErrorNombre: "Hubo error", ErrorCodigo: "400"}
+		errors = publico.Error{ErrorNombre: "Hubo error", ErrorCodigo: 400}
 
 		w.Header().Set("Content-Type", "application-json")
 		w.WriteHeader(400)
