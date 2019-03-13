@@ -60,7 +60,7 @@ func CheckToken(w http.ResponseWriter, r *http.Request){
 		errors = publico.Error{ErrorNombre: "Hubo error", ErrorCodigo: 400}
 
 		w.Header().Set("Content-Type", "application-json")
-		w.WriteHeader(400)
+		w.WriteHeader(errors.ErrorCodigo)
 
 		json.NewEncoder(w).Encode(errors)
 	}
