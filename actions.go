@@ -35,6 +35,11 @@ func Login(w http.ResponseWriter, r *http.Request){
 
 	//VER COMO PREGUNTAR SI EL TOKEN YA ESTA INGRESADO EN EL HASHMAP
 	m[string(token)] = autenticacion
+
+	w.Header().Set("Content-Type", "application-json")
+	w.WriteHeader(200)
+
+	json.NewEncoder(w).Encode(token)
 	fmt.Println(m[string(token)])
 	fmt.Println(autenticacion)
 }
