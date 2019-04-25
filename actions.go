@@ -1,18 +1,12 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
-
-	// "log"
-	//  "github.com/gorilla/mux"
-	"encoding/json"
-	//"github.com/jinzhu/gorm"
 	"time"
 
 	_ "github.com/jinzhu/gorm/dialects/postgres"
-
-	//   "github.com/xubiosueldos/conexionBD"
 	"github.com/xubiosueldos/autenticacion/publico"
 )
 
