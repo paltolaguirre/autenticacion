@@ -1,8 +1,6 @@
 package publico
 
-
 type Error struct {
-
-	ErrorNombre string
-	ErrorCodigo int
+	ErrorNombre string `json:"errornombre"`
+	ErrorCodigo int    `json:"errorcodigo"`
 }
