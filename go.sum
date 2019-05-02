@@ -8,3 +8,5 @@ github.com/lib/pq v1.0.0 h1:X5PMW56eZitiTeO7tKzZxFCSpbFZJtkMMooicw2us9A=
 github.com/lib/pq v1.0.0/go.mod h1:5WUZQaWbwv1U+lTReE5YruASi9Al49XbQIvNi/34Woo=
 github.com/xubiosueldos/conexionBD v0.0.0-20190130161333-c1882e4e8a28 h1:CIFUq/TgH9Ts3eilfVf+oYm+WxvpsSdlvz+XkNUbLMs=
 github.com/xubiosueldos/conexionBD v0.0.0-20190130161333-c1882e4e8a28/go.mod h1:w+NLrmGfHNCU1qTKiJB519uGgyZmasmSqDoCmEoXV28=
+github.com/xubiosueldos/framework v0.0.0-20190502133422-d53dd93b5196 h1:SA+m66fK0NXhrVbj4pvXj/KEjbtxq+IyzdEWjsOm0Lw=
+github.com/xubiosueldos/framework v0.0.0-20190502133422-d53dd93b5196/go.mod h1:txPj3GVjVoZeJnObRIBrzNFVDT7baf2VEpK3kCkpDWg=
