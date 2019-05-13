@@ -3,12 +3,15 @@ package main
 import (
 	"log"
 	"net/http"
-	//"github.com/xubiosueldos/conexionBD"
+
+	"github.com/xubiosueldos/autenticacion/publico"
+	"github.com/xubiosueldos/conexionBD"
 )
 
 func main() {
 
-	//db := conexionBD.ConnectBD()
+	db := conexionBD.ConnectBD("security")
+	db.AutoMigrate(&publico.Security{})
 
 	router := newRouter()
 
