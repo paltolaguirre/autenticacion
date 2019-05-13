@@ -2,7 +2,7 @@ package publico
 
 import "time"
 
-type TokenAutenticacion struct {
+type Security struct {
 	//	gorm.Model
 	Username      string    `json:"username"`
 	Pass          string    `json:"pass"`
