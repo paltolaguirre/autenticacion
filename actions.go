@@ -8,8 +8,8 @@ import (
 	s "strings"
 	"time"
 
+	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
-	"github.com/xubiosueldos/autenticacion/apiclient"
 	"github.com/xubiosueldos/autenticacion/publico"
 	"github.com/xubiosueldos/conexionBD"
 	"github.com/xubiosueldos/framework"
@@ -23,7 +23,7 @@ var errors publico.Error
 
 func Login(w http.ResponseWriter, r *http.Request) {
 
-	tokenEncode := apiclient.obtenerTokenHeader(r)
+	tokenEncode := obtenerTokenHeader(r)
 
 	//Chequear con el monolitico que los datos ingresados sean correctos
 	if chequeoAuthenticationMonolitico(tokenEncode, r) {
@@ -69,7 +69,7 @@ func CheckToken(w http.ResponseWriter, r *http.Request) {
 
 	token := obtenerTokenHeader(r)
 
-	security, ok, err := apiclient.checkTokenDB(w, token)
+	security, ok, err := checkTokenDB(w, token)
 
 	if ok {
 		framework.RespondJSON(w, http.StatusOK, security)
@@ -131,4 +131,28 @@ func insertarTokenSecurity(tokenDecode []byte, w http.ResponseWriter) *publico.S
 	}
 
 	return &security
+}
+func checkTokenDB(w http.ResponseWriter, token string) (*publico.Security, bool, error) {
+
+	var existeToken bool = true
+	var security publico.Security
+	var err error = nil
+	db := conexionBD.ConnectBD("security")
+
+	if err = db.Set("gorm:auto_preload", true).First(&security, "token = ?", token).Error; gorm.IsRecordNotFoundError(err) {
+		framework.RespondError(w, http.StatusNotFound, err.Error())
+		existeToken = false
+	}
+
+	return &security, existeToken, err
+}
+
+func obtenerTokenHeader(r *http.Request) string {
+
+	header := r.Header.Get("Authorization")
+
+	token := s.Split(header, " ")[1]
+
+	return token
+
 }

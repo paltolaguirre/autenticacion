@@ -1,37 +1,42 @@
 package apiclient
 
 import (
+	"encoding/json"
+	"io/ioutil"
 	"net/http"
 
-	s "strings"
-
-	"github.com/jinzhu/gorm"
 	"github.com/xubiosueldos/autenticacion/publico"
-	"github.com/xubiosueldos/conexionBD"
-	"github.com/xubiosueldos/framework"
 )
 
-func CheckTokenDB(w http.ResponseWriter, token string) (*publico.Security, bool, error) {
+func CheckTokenValido(r *http.Request) (*publico.Security, *publico.Error) {
 
-	var existeToken bool = true
-	var security publico.Security
-	var err error = nil
-	db := conexionBD.ConnectBD("security")
+	var tokenAutenticacion *publico.Security
+	var tokenError *publico.Error
 
-	if err = db.Set("gorm:auto_preload", true).First(&security, "token = ?", token).Error; gorm.IsRecordNotFoundError(err) {
-		framework.RespondError(w, http.StatusNotFound, err.Error())
-		existeToken = false
-	}
+	url := "http://localhost:8081/check-token"
 
-	return &security, existeToken, err
-}
-
-func ObtenerTokenHeader(r *http.Request) string {
+	req, _ := http.NewRequest("GET", url, nil)
 
 	header := r.Header.Get("Authorization")
 
-	token := s.Split(header, " ")[1]
+	req.Header.Add("Authorization", header)
 
-	return token
+	res, _ := http.DefaultClient.Do(req)
 
+	defer res.Body.Close()
+	body, _ := ioutil.ReadAll(res.Body)
+
+	if res.StatusCode != http.StatusBadRequest {
+
+		// tokenAutenticacion = &(TokenAutenticacion{})
+		tokenAutenticacion = new(publico.Security)
+		json.Unmarshal([]byte(string(body)), tokenAutenticacion)
+
+	} else {
+		tokenError = new(publico.Error)
+		json.Unmarshal([]byte(string(body)), tokenError)
+
+	}
+
+	return tokenAutenticacion, tokenError
 }
