@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"net/http"
+	s "strings"
 
 	"github.com/xubiosueldos/autenticacion/publico"
 	"github.com/xubiosueldos/framework"
@@ -35,6 +36,9 @@ func CheckTokenValido(r *http.Request) (*publico.Security, *publico.Error) {
 
 	} else {
 		tokenError = new(publico.Error)
+		errorrespuesta := s.Split(res.Status, " ")
+		tokenError.ErrorNombre = errorrespuesta[1]
+		tokenError.ErrorCodigo = res.StatusCode
 		json.Unmarshal([]byte(string(body)), tokenError)
 
 	}
