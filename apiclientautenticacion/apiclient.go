@@ -27,7 +27,7 @@ func CheckTokenValido(r *http.Request) (*publico.Security, *publico.Error) {
 	defer res.Body.Close()
 	body, _ := ioutil.ReadAll(res.Body)
 
-	if res.StatusCode != http.StatusBadRequest {
+	if res.StatusCode != http.StatusUnauthorized {
 
 		// tokenAutenticacion = &(TokenAutenticacion{})
 		tokenAutenticacion = new(publico.Security)
