@@ -3,6 +3,8 @@ package apiclient
 import (
 	"net/http"
 
+	s "strings"
+
 	"github.com/jinzhu/gorm"
 	"github.com/xubiosueldos/autenticacion/publico"
 	"github.com/xubiosueldos/conexionBD"
