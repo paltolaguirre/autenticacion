@@ -11,7 +11,7 @@ import (
 	"github.com/xubiosueldos/framework"
 )
 
-func checkTokenDB(w http.ResponseWriter, token string) (*publico.Security, bool, error) {
+func CheckTokenDB(w http.ResponseWriter, token string) (*publico.Security, bool, error) {
 
 	var existeToken bool = true
 	var security publico.Security
@@ -26,7 +26,7 @@ func checkTokenDB(w http.ResponseWriter, token string) (*publico.Security, bool,
 	return &security, existeToken, err
 }
 
-func obtenerTokenHeader(r *http.Request) string {
+func ObtenerTokenHeader(r *http.Request) string {
 
 	header := r.Header.Get("Authorization")
 
