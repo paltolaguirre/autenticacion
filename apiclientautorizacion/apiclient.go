@@ -1,4 +1,4 @@
-package apiclient
+package apiclientautorizacion
 
 import (
 	"encoding/json"
@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"github.com/xubiosueldos/autenticacion/publico"
+	"github.com/xubiosueldos/framework"
 )
 
 func CheckTokenValido(r *http.Request) (*publico.Security, *publico.Error) {
@@ -39,4 +40,10 @@ func CheckTokenValido(r *http.Request) (*publico.Security, *publico.Error) {
 	}
 
 	return tokenAutenticacion, tokenError
+}
+
+func ErrorToken(w http.ResponseWriter, tokenError *publico.Error) {
+	errorToken := *tokenError
+	framework.RespondError(w, errorToken.ErrorCodigo, errorToken.ErrorNombre)
+
 }

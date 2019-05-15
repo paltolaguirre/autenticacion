@@ -140,7 +140,7 @@ func checkTokenDB(w http.ResponseWriter, token string) (*publico.Security, bool,
 	db := conexionBD.ConnectBD("security")
 
 	if err = db.Set("gorm:auto_preload", true).First(&security, "token = ?", token).Error; gorm.IsRecordNotFoundError(err) {
-		framework.RespondError(w, http.StatusNotFound, err.Error())
+		framework.RespondError(w, http.StatusUnauthorized, err.Error())
 		existeToken = false
 	}
 
