@@ -1,4 +1,4 @@
-package apiclientautorizacion
+package apiclientautenticacion
 
 import (
 	"encoding/json"
