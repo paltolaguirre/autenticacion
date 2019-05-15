@@ -8,8 +8,8 @@ import (
 	s "strings"
 	"time"
 
-	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
+	"github.com/xubiosueldos/autenticacion/apiclient"
 	"github.com/xubiosueldos/autenticacion/publico"
 	"github.com/xubiosueldos/conexionBD"
 	"github.com/xubiosueldos/framework"
@@ -23,8 +23,7 @@ var errors publico.Error
 
 func Login(w http.ResponseWriter, r *http.Request) {
 
-	header := r.Header.Get("Authorization")
-	tokenEncode := s.Split(header, " ")[1]
+	tokenEncode := apiclient.obtenerTokenHeader(r)
 
 	//Chequear con el monolitico que los datos ingresados sean correctos
 	if chequeoAuthenticationMonolitico(tokenEncode, r) {
@@ -49,13 +48,28 @@ func Login(w http.ResponseWriter, r *http.Request) {
 
 }
 
+func Logout(w http.ResponseWriter, r *http.Request) {
+
+	token := obtenerTokenHeader(r)
+
+	db := conexionBD.ConnectBD("security")
+	defer db.Close()
+
+	if err := db.Unscoped().Where("token = ?", token).Delete(publico.Security{}).Error; err != nil {
+
+		framework.RespondError(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	//Hice que devuelva el token, no se si es necesario
+	framework.RespondJSON(w, http.StatusOK, token)
+}
+
 func CheckToken(w http.ResponseWriter, r *http.Request) {
 
-	header := r.Header.Get("Authorization")
+	token := obtenerTokenHeader(r)
 
-	token := s.Split(header, " ")[1]
-
-	security, ok, err := checkTokenDB(w, token)
+	security, ok, err := apiclient.checkTokenDB(w, token)
 
 	if ok {
 		framework.RespondJSON(w, http.StatusOK, security)
@@ -74,9 +88,13 @@ func chequeoAuthenticationMonolitico(tokenEncode string, r *http.Request) bool {
 
 	url := configuracion.Url + "SecurityAuthenticationGo"
 
+	var prueba []byte = []byte("xubiosueldosimplementadocongo")
+	tokenSecurity := base64.StdEncoding.EncodeToString(prueba)
+
 	req, _ := http.NewRequest("GET", url, nil)
 
 	req.Header.Add("Authorization", tokenEncode)
+	req.Header.Add("SecurityToken", tokenSecurity)
 
 	res, _ := http.DefaultClient.Do(req)
 
@@ -89,7 +107,7 @@ func chequeoAuthenticationMonolitico(tokenEncode string, r *http.Request) bool {
 	return infoUserValida
 }
 
-func insertarTokenSecurity(tokenDecode []byte, w http.ResponseWriter) publico.Security {
+func insertarTokenSecurity(tokenDecode []byte, w http.ResponseWriter) *publico.Security {
 
 	db := conexionBD.ConnectBD("security")
 	defer db.Close()
@@ -109,22 +127,8 @@ func insertarTokenSecurity(tokenDecode []byte, w http.ResponseWriter) publico.Se
 
 	if err := db.Create(&security).Error; err != nil {
 		framework.RespondError(w, http.StatusInternalServerError, err.Error())
+		return nil
 	}
 
-	return security
-}
-
-func checkTokenDB(w http.ResponseWriter, token string) (publico.Security, bool, error) {
-
-	var existeToken bool = true
-	var security publico.Security
-	var err error = nil
-	db := conexionBD.ConnectBD("security")
-
-	if err = db.Set("gorm:auto_preload", true).First(&security, "token = ?", token).Error; gorm.IsRecordNotFoundError(err) {
-		framework.RespondError(w, http.StatusNotFound, err.Error())
-		existeToken = false
-	}
-
-	return security, existeToken, err
+	return &security
 }
