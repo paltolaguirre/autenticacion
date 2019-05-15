@@ -10,7 +10,7 @@ import (
 	"github.com/xubiosueldos/framework"
 )
 
-func CheckTokenValido(r *http.Request) (*publico.Security, *publico.Error) {
+func CheckTokenValidoConMicroservicioAutenticacion(r *http.Request) (*publico.Security, *publico.Error) {
 
 	var tokenAutenticacion *publico.Security
 	var tokenError *publico.Error
@@ -50,4 +50,16 @@ func ErrorToken(w http.ResponseWriter, tokenError *publico.Error) {
 	errorToken := *tokenError
 	framework.RespondError(w, errorToken.ErrorCodigo, errorToken.ErrorNombre)
 
+}
+
+func CheckTokenValido(w http.ResponseWriter, r *http.Request) (bool, *publico.Security) {
+	var tokenValido bool = true
+	tokenAutenticacion, tokenError := CheckTokenValidoConMicroservicioAutenticacion(r)
+
+	if tokenError != nil {
+		ErrorToken(w, tokenError)
+		tokenValido = false
+	}
+
+	return tokenValido, tokenAutenticacion
 }
