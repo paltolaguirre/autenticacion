@@ -1,9 +1,13 @@
 package publico
 
-import "time"
+import (
+	"time"
+
+	"github.com/xubiosueldos/conexionBD/structGormModel"
+)
 
 type Security struct {
-	//	gorm.Model
+	structGormModel.GormModel
 	Username      string    `json:"username"`
 	Pass          string    `json:"pass"`
 	Tenant        string    `json:"tenant"`
