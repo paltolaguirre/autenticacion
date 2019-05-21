@@ -23,10 +23,16 @@ var errors publico.Error
 
 func Login(w http.ResponseWriter, r *http.Request) {
 
-	tokenEncode := obtenerTokenHeader(r)
+	var datosCorrectos bool = true
 
+	tokenEncode := obtenerTokenHeader(r)
+	configuracion := configuracion.GetInstance()
+
+	if configuracion.Checkmonolitico == true {
+		datosCorrectos = chequeoAuthenticationMonolitico(tokenEncode, r, configuracion)
+	}
 	//Chequear con el monolitico que los datos ingresados sean correctos
-	if chequeoAuthenticationMonolitico(tokenEncode, r) {
+	if datosCorrectos {
 
 		tokenDecode, err := base64.StdEncoding.DecodeString(tokenEncode)
 
@@ -81,9 +87,8 @@ func CheckToken(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func chequeoAuthenticationMonolitico(tokenEncode string, r *http.Request) bool {
+func chequeoAuthenticationMonolitico(tokenEncode string, r *http.Request, configuracion configuracion.Configuracion) bool {
 
-	configuracion := configuracion.GetInstance()
 	infoUserValida := false
 
 	url := configuracion.Url + "SecurityAuthenticationGo"
