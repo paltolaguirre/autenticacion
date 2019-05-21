@@ -18,7 +18,6 @@ import (
 
 //var db *gorm.DB
 var err error
-var m = make(map[string]publico.Security)
 var errors publico.Error
 
 func Login(w http.ResponseWriter, r *http.Request) {
