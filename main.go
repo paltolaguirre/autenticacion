@@ -3,12 +3,18 @@ package main
 import (
 	"log"
 	"net/http"
-	//"github.com/xubiosueldos/conexionBD"
+
+	"github.com/jinzhu/gorm"
+	"github.com/xubiosueldos/autenticacion/publico"
+	"github.com/xubiosueldos/conexionBD/apiclientconexionbd"
+	"github.com/xubiosueldos/framework/configuracion"
 )
 
 func main() {
-
-	//db := conexionBD.ConnectBD()
+	var tokenAutenticacion publico.Security
+	tokenAutenticacion.Tenant = "security"
+	versionMicroservicio := obtenerVersionSecurity()
+	apiclientconexionbd.ObtenerDB(&tokenAutenticacion, "autenticacion", versionMicroservicio, AutomigrateTablasPrivadas)
 
 	router := newRouter()
 
@@ -16,4 +22,14 @@ func main() {
 
 	log.Fatal(server)
 
+}
+
+func AutomigrateTablasPrivadas(db *gorm.DB) {
+	db.AutoMigrate(&publico.Security{})
+}
+
+func obtenerVersionSecurity() int {
+	configuracion := configuracion.GetInstance()
+
+	return configuracion.Versionsecurity
 }

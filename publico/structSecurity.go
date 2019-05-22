@@ -1,9 +1,13 @@
 package publico
 
-import "time"
+import (
+	"time"
 
-type TokenAutenticacion struct {
-	//	gorm.Model
+	"github.com/xubiosueldos/conexionBD/structGormModel"
+)
+
+type Security struct {
+	structGormModel.GormModel
 	Username      string    `json:"username"`
 	Pass          string    `json:"pass"`
 	Tenant        string    `json:"tenant"`
