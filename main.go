@@ -11,9 +11,11 @@ import (
 )
 
 func main() {
+	configuracion := configuracion.GetInstance()
 	var tokenAutenticacion publico.Security
 	tokenAutenticacion.Tenant = "security"
 	versionMicroservicio := obtenerVersionSecurity()
+
 	apiclientconexionbd.ObtenerDB(&tokenAutenticacion, "autenticacion", versionMicroservicio, AutomigrateTablasPrivadas)
 
 	router := newRouter()
