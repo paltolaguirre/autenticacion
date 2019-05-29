@@ -86,7 +86,7 @@ func chequeoAuthenticationMonolitico(tokenEncode string, r *http.Request) bool {
 	configuracion := configuracion.GetInstance()
 	infoUserValida := false
 
-	url := configuracion.Url + "SecurityAuthenticationGo"
+	url := configuracion.Protocolomonolitico + "://" + configuracion.Dominiomonolitico + ":" + configuracion.Puertomonolitico + "/NXV/SecurityAuthenticationGo"
 
 	var prueba []byte = []byte("xubiosueldosimplementadocongo")
 	tokenSecurity := base64.StdEncoding.EncodeToString(prueba)
