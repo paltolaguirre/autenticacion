@@ -28,7 +28,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	configuracion := configuracion.GetInstance()
 
 	if configuracion.Checkmonolitico == true {
-		datosCorrectos = chequeoAuthenticationMonolitico(tokenEncode, r, configuracion)
+		datosCorrectos = chequeoAuthenticationMonolitico(tokenEncode, r)
 	}
 	//Chequear con el monolitico que los datos ingresados sean correctos
 	if datosCorrectos {
@@ -86,11 +86,11 @@ func CheckToken(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func chequeoAuthenticationMonolitico(tokenEncode string, r *http.Request, configuracion configuracion.Configuracion) bool {
+func chequeoAuthenticationMonolitico(tokenEncode string, r *http.Request) bool {
 
 	infoUserValida := false
-
-	url := configuracion.Protocolomonolitico + "://" + configuracion.Dominiomonolitico + ":" + configuracion.Puertomonolitico + "/NXV/SecurityAuthenticationGo"
+	url := configuracion.GetUrlMonolitico()+"SecurityAuthenticationGo"
+	//url := configuracion.Protocolomonolitico + "://" + configuracion.Dominiomonolitico + ":" + configuracion.Puertomonolitico + "/NXV/SecurityAuthenticationGo"
 
 	var prueba []byte = []byte("xubiosueldosimplementadocongo")
 	tokenSecurity := base64.StdEncoding.EncodeToString(prueba)
