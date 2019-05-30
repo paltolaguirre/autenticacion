@@ -30,19 +30,19 @@ var routes = Routes{
 	Route{
 		"Login",
 		"POST",
-		"/login",
+		"/api/auth/login",
 		Login,
 	},
 	Route{
 		"Logout",
 		"GET",
-		"/logout",
+		"/api/auth/logout",
 		Logout,
 	},
 	Route{
 		"CheckToken",
 		"GET",
-		"/check-token",
+		"/api/auth/check-token",
 		CheckToken,
 	},
 }

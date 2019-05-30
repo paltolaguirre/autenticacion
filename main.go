@@ -11,14 +11,16 @@ import (
 )
 
 func main() {
+	configuracion := configuracion.GetInstance()
 	var tokenAutenticacion publico.Security
 	tokenAutenticacion.Tenant = "security"
 	versionMicroservicio := obtenerVersionSecurity()
+
 	apiclientconexionbd.ObtenerDB(&tokenAutenticacion, "autenticacion", versionMicroservicio, AutomigrateTablasPrivadas)
 
 	router := newRouter()
 
-	server := http.ListenAndServe(":8081", router)
+	server := http.ListenAndServe(":"+configuracion.Puertomicroserivicioautenticacion, router)
 
 	log.Fatal(server)
 

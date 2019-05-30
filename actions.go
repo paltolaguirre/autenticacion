@@ -1,6 +1,7 @@
 package main
 
 import (
+	"crypto/tls"
 	"encoding/base64"
 	"math/rand"
 	"net/http"
@@ -28,7 +29,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	configuracion := configuracion.GetInstance()
 
 	if configuracion.Checkmonolitico == true {
-		datosCorrectos = chequeoAuthenticationMonolitico(tokenEncode, r, configuracion)
+		datosCorrectos = chequeoAuthenticationMonolitico(tokenEncode, r)
 	}
 	//Chequear con el monolitico que los datos ingresados sean correctos
 	if datosCorrectos {
@@ -86,22 +87,27 @@ func CheckToken(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func chequeoAuthenticationMonolitico(tokenEncode string, r *http.Request, configuracion configuracion.Configuracion) bool {
+func chequeoAuthenticationMonolitico(tokenEncode string, r *http.Request) bool {
 
 	infoUserValida := false
-
-	url := configuracion.Url + "SecurityAuthenticationGo"
+	http.DefaultTransport.(*http.Transport).TLSClientConfig = &tls.Config{InsecureSkipVerify: true}
 
 	var prueba []byte = []byte("xubiosueldosimplementadocongo")
 	tokenSecurity := base64.StdEncoding.EncodeToString(prueba)
 
-	req, _ := http.NewRequest("GET", url, nil)
+	url := configuracion.GetUrlMonolitico() + "SecurityAuthenticationGo"
 
+	req, err := http.NewRequest("GET", url, nil)
+
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded; charset=utf-8")
 	req.Header.Add("Authorization", tokenEncode)
 	req.Header.Add("SecurityToken", tokenSecurity)
 
-	res, _ := http.DefaultClient.Do(req)
-
+	client := &http.Client{}
+	res, err := client.Do(req)
+	if err != nil {
+		panic(err)
+	}
 	defer res.Body.Close()
 
 	if res.StatusCode == http.StatusAccepted {

@@ -6,16 +6,23 @@ import (
 	"net/http"
 	s "strings"
 
+	"github.com/xubiosueldos/framework/configuracion"
+
 	"github.com/xubiosueldos/autenticacion/publico"
 	"github.com/xubiosueldos/framework"
 )
 
 func CheckTokenValidoConMicroservicioAutenticacion(r *http.Request) (*publico.Security, *publico.Error) {
 
+	config := configuracion.GetInstance()
+
 	var tokenAutenticacion *publico.Security
 	var tokenError *publico.Error
-
-	url := "http://localhost:8081/check-token"
+	puerto := config.Puertomicroservicio
+	if puerto == "" {
+		puerto = config.Puertomicroserivicioautenticacion
+	}
+	url := configuracion.GetUrlMicroservicio(puerto) + "/auth/check-token"
 
 	req, _ := http.NewRequest("GET", url, nil)
 
