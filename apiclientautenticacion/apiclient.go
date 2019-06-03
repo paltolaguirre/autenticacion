@@ -16,8 +16,8 @@ func CheckTokenValidoConMicroservicioAutenticacion(r *http.Request) (*publico.Se
 
 	var tokenAutenticacion *publico.Security
 	var tokenError *publico.Error
-
-	url := configuracion.GetUrlMicroservicio() + "auth/check-token"
+	config := configuracion.GetInstance()
+	url := configuracion.GetUrlMicroservicio(config.Puertomicroservicioautenticacion) + "auth/check-token"
 
 	req, _ := http.NewRequest("GET", url, nil)
 
