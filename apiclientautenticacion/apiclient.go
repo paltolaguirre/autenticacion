@@ -14,15 +14,10 @@ import (
 
 func CheckTokenValidoConMicroservicioAutenticacion(r *http.Request) (*publico.Security, *publico.Error) {
 
-	config := configuracion.GetInstance()
-
 	var tokenAutenticacion *publico.Security
 	var tokenError *publico.Error
-	puerto := config.Puertomicroservicio
-	if puerto == "" {
-		puerto = config.Puertomicroserivicioautenticacion
-	}
-	url := configuracion.GetUrlMicroservicio(puerto) + "/auth/check-token"
+
+	url := configuracion.GetUrlMicroservicio() + "auth/check-token"
 
 	req, _ := http.NewRequest("GET", url, nil)
 
