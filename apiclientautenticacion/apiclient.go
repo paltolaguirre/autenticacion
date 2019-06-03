@@ -1,8 +1,11 @@
 package apiclientautenticacion
 
 import (
+	"crypto/tls"
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
+	"log"
 	"net/http"
 	s "strings"
 
@@ -25,11 +28,20 @@ func CheckTokenValidoConMicroservicioAutenticacion(r *http.Request) (*publico.Se
 
 	req.Header.Add("Authorization", header)
 
-	res, _ := http.DefaultClient.Do(req)
+	http.DefaultTransport.(*http.Transport).TLSClientConfig = &tls.Config{InsecureSkipVerify: true}
+	res, err := http.DefaultClient.Do(req)
+	if err != nil {
+		log.Panic(err)
+	}
+
+	fmt.Println("URL:", url)
 
 	defer res.Body.Close()
-	body, _ := ioutil.ReadAll(res.Body)
 
+	body, err := ioutil.ReadAll(res.Body)
+	if err != nil {
+		log.Panic(err)
+	}
 	if res.StatusCode != http.StatusUnauthorized {
 
 		// tokenAutenticacion = &(TokenAutenticacion{})
