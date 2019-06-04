@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
-	"log"
 	"net/http"
 	s "strings"
 
@@ -22,16 +21,20 @@ func CheckTokenValidoConMicroservicioAutenticacion(r *http.Request) (*publico.Se
 	config := configuracion.GetInstance()
 	url := configuracion.GetUrlMicroservicio(config.Puertomicroservicioautenticacion) + "auth/check-token"
 
-	req, _ := http.NewRequest("GET", url, nil)
+	req, err := http.NewRequest("GET", url, nil)
 
+	if err != nil {
+		fmt.Println("Error: ", err)
+	}
 	header := r.Header.Get("Authorization")
 
 	req.Header.Add("Authorization", header)
 
 	http.DefaultTransport.(*http.Transport).TLSClientConfig = &tls.Config{InsecureSkipVerify: true}
 	res, err := http.DefaultClient.Do(req)
+
 	if err != nil {
-		log.Panic(err)
+		fmt.Println("Error: ", err)
 	}
 
 	fmt.Println("URL:", url)
@@ -40,7 +43,7 @@ func CheckTokenValidoConMicroservicioAutenticacion(r *http.Request) (*publico.Se
 
 	body, err := ioutil.ReadAll(res.Body)
 	if err != nil {
-		log.Panic(err)
+		fmt.Println("Error: ", err)
 	}
 	if res.StatusCode != http.StatusUnauthorized {
 
@@ -76,4 +79,11 @@ func CheckTokenValido(w http.ResponseWriter, r *http.Request) (bool, *publico.Se
 	}
 
 	return tokenValido, tokenAutenticacion
+}
+
+func ObtenerTenant(tokenAutenticacion *publico.Security) string {
+
+	token := *tokenAutenticacion
+	tenant := token.Tenant
+	return tenant
 }
