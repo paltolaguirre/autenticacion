@@ -1,8 +1,11 @@
 package apiclientautenticacion
 
 import (
+	"crypto/tls"
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
+	"log"
 	"net/http"
 	s "strings"
 
@@ -14,15 +17,10 @@ import (
 
 func CheckTokenValidoConMicroservicioAutenticacion(r *http.Request) (*publico.Security, *publico.Error) {
 
-	config := configuracion.GetInstance()
-
 	var tokenAutenticacion *publico.Security
 	var tokenError *publico.Error
-	puerto := config.Puertomicroservicio
-	if puerto == "" {
-		puerto = config.Puertomicroserivicioautenticacion
-	}
-	url := configuracion.GetUrlMicroservicio(puerto) + "/auth/check-token"
+	config := configuracion.GetInstance()
+	url := configuracion.GetUrlMicroservicio(config.Puertomicroservicioautenticacion) + "auth/check-token"
 
 	req, _ := http.NewRequest("GET", url, nil)
 
@@ -30,11 +28,20 @@ func CheckTokenValidoConMicroservicioAutenticacion(r *http.Request) (*publico.Se
 
 	req.Header.Add("Authorization", header)
 
-	res, _ := http.DefaultClient.Do(req)
+	http.DefaultTransport.(*http.Transport).TLSClientConfig = &tls.Config{InsecureSkipVerify: true}
+	res, err := http.DefaultClient.Do(req)
+	if err != nil {
+		log.Panic(err)
+	}
+
+	fmt.Println("URL:", url)
 
 	defer res.Body.Close()
-	body, _ := ioutil.ReadAll(res.Body)
 
+	body, err := ioutil.ReadAll(res.Body)
+	if err != nil {
+		log.Panic(err)
+	}
 	if res.StatusCode != http.StatusUnauthorized {
 
 		// tokenAutenticacion = &(TokenAutenticacion{})
