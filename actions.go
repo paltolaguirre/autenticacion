@@ -3,6 +3,7 @@ package main
 import (
 	"crypto/tls"
 	"encoding/base64"
+	"fmt"
 	"math/rand"
 	"net/http"
 	"strconv"
@@ -99,15 +100,22 @@ func chequeoAuthenticationMonolitico(tokenEncode string, r *http.Request) bool {
 
 	req, err := http.NewRequest("GET", url, nil)
 
+	if err != nil {
+		fmt.Println("Error: ", err)
+	}
+
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded; charset=utf-8")
 	req.Header.Add("Authorization", tokenEncode)
 	req.Header.Add("SecurityToken", tokenSecurity)
 
 	client := &http.Client{}
+
 	res, err := client.Do(req)
+
 	if err != nil {
-		panic(err)
+		fmt.Println("Error: ", err)
 	}
+
 	defer res.Body.Close()
 
 	if res.StatusCode == http.StatusAccepted {
