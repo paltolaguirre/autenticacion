@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/jinzhu/gorm"
+	"github.com/xubiosueldos/autenticacion/apiclientautenticacion"
 	"github.com/xubiosueldos/autenticacion/publico"
 	"github.com/xubiosueldos/conexionBD/apiclientconexionbd"
 	"github.com/xubiosueldos/framework/configuracion"
@@ -15,8 +16,8 @@ func main() {
 	var tokenAutenticacion publico.Security
 	tokenAutenticacion.Tenant = "security"
 	versionMicroservicio := obtenerVersionSecurity()
-
-	apiclientconexionbd.ObtenerDB(&tokenAutenticacion, "autenticacion", versionMicroservicio, AutomigrateTablasPrivadas)
+	tenant := apiclientautenticacion.ObtenerTenant(&tokenAutenticacion)
+	apiclientconexionbd.ObtenerDB(tenant, "autenticacion", versionMicroservicio, AutomigrateTablasPrivadas)
 
 	router := newRouter()
 
