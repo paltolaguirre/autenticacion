@@ -14,6 +14,7 @@ import (
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 	"github.com/xubiosueldos/autenticacion/publico"
 	"github.com/xubiosueldos/conexionBD"
+	"github.com/xubiosueldos/conexionBD/apiclientconexionbd"
 	"github.com/xubiosueldos/framework"
 	"github.com/xubiosueldos/framework/configuracion"
 )
@@ -65,7 +66,8 @@ func Logout(w http.ResponseWriter, r *http.Request) {
 	token := obtenerTokenHeader(r)
 
 	db := conexionBD.ConnectBD("security")
-	defer db.Close()
+	//defer db.Close()
+	defer apiclientconexionbd.CerrarDB(db)
 
 	if err := db.Unscoped().Where("token = ?", token).Delete(publico.Security{}).Error; err != nil {
 
@@ -133,7 +135,8 @@ func chequeoAuthenticationMonolitico(tokenEncode string, r *http.Request) bool {
 func insertarTokenSecurity(tokenDecode []byte, w http.ResponseWriter) *publico.Security {
 
 	db := conexionBD.ConnectBD("security")
-	defer db.Close()
+	//defer db.Close()
+	defer apiclientconexionbd.CerrarDB(db)
 
 	infoUser := s.Split(string(tokenDecode), ":")
 
@@ -160,7 +163,9 @@ func checkTokenDB(w http.ResponseWriter, token string) (*publico.Security, bool,
 	var existeToken bool = true
 	var security publico.Security
 	var err error = nil
+
 	db := conexionBD.ConnectBD("security")
+	defer apiclientconexionbd.CerrarDB(db)
 
 	if err = db.Set("gorm:auto_preload", true).First(&security, "token = ?", token).Error; gorm.IsRecordNotFoundError(err) {
 		framework.RespondError(w, http.StatusUnauthorized, err.Error())
