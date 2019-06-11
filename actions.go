@@ -22,6 +22,11 @@ import (
 var err error
 var errors publico.Error
 
+// Sirve para controlar si el server esta OK
+func Healthy(writer http.ResponseWriter, request *http.Request) {
+	writer.Write([]byte("Healthy"))
+}
+
 func Login(w http.ResponseWriter, r *http.Request) {
 
 	var datosCorrectos bool = true
