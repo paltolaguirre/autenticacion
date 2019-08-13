@@ -141,7 +141,7 @@ func insertarTokenSecurity(tokenDecode []byte, w http.ResponseWriter) *publico.S
 	infoUser := s.Split(string(tokenDecode), ":")
 
 	username := infoUser[0]
-	pass := infoUser[1]
+	//pass := infoUser[1]
 	tenant := infoUser[2]
 
 	numeroRandom := rand.Int63()
@@ -149,7 +149,7 @@ func insertarTokenSecurity(tokenDecode []byte, w http.ResponseWriter) *publico.S
 
 	fecha := time.Now()
 
-	security := publico.Security{Username: username, Pass: pass, Tenant: tenant, Token: token, FechaCreacion: fecha}
+	security := publico.Security{Username: username, Tenant: tenant, Token: token, FechaCreacion: fecha}
 
 	if err := db.Create(&security).Error; err != nil {
 		framework.RespondError(w, http.StatusInternalServerError, err.Error())
