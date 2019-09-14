@@ -65,7 +65,7 @@ func Logout(w http.ResponseWriter, r *http.Request) {
 
 	token := obtenerTokenHeader(r)
 
-	db := conexionBD.ConnectBD("security")
+	db := apiclientconexionbd.ObtenerDB("security")
 	//defer db.Close()
 	defer apiclientconexionbd.CerrarDB(db)
 
@@ -134,7 +134,7 @@ func chequeoAuthenticationMonolitico(tokenEncode string, r *http.Request) bool {
 
 func insertarTokenSecurity(tokenDecode []byte, w http.ResponseWriter) *structAutenticacion.Security {
 
-	db := conexionBD.ConnectBD("security")
+	db := apiclientconexionbd.ObtenerDB("security")
 	//defer db.Close()
 	defer apiclientconexionbd.CerrarDB(db)
 
