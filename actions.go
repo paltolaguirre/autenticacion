@@ -52,6 +52,13 @@ func Login(w http.ResponseWriter, r *http.Request) {
 
 		security := insertarTokenSecurity(tokenDecode, w)
 
+		db := conexionBD.ObtenerDB(security.Tenant)
+		err = apiclientconexionbd.AutomigrateTablasPrivadas(db)
+		if err != nil {
+			fmt.Println("Error: ", err)
+		}
+		defer conexionBD.CerrarDB(db)
+
 		framework.RespondJSON(w, http.StatusOK, security)
 
 	} else {
@@ -65,9 +72,9 @@ func Logout(w http.ResponseWriter, r *http.Request) {
 
 	token := obtenerTokenHeader(r)
 
-	db := apiclientconexionbd.ObtenerDB("security")
+	db := conexionBD.ObtenerDB("security")
 	//defer db.Close()
-	defer apiclientconexionbd.CerrarDB(db)
+	defer conexionBD.CerrarDB(db)
 
 	if err := db.Unscoped().Where("token = ?", token).Delete(structAutenticacion.Security{}).Error; err != nil {
 
@@ -134,9 +141,9 @@ func chequeoAuthenticationMonolitico(tokenEncode string, r *http.Request) bool {
 
 func insertarTokenSecurity(tokenDecode []byte, w http.ResponseWriter) *structAutenticacion.Security {
 
-	db := apiclientconexionbd.ObtenerDB("security")
+	db := conexionBD.ObtenerDB("security")
 	//defer db.Close()
-	defer apiclientconexionbd.CerrarDB(db)
+	defer conexionBD.CerrarDB(db)
 
 	infoUser := s.Split(string(tokenDecode), ":")
 
@@ -164,8 +171,8 @@ func checkTokenDB(w http.ResponseWriter, token string) (*structAutenticacion.Sec
 	var security structAutenticacion.Security
 	var err error = nil
 
-	db := conexionBD.ConnectBD("security")
-	defer apiclientconexionbd.CerrarDB(db)
+	db := conexionBD.ObtenerDB("security")
+	defer conexionBD.CerrarDB(db)
 
 	if err = db.Set("gorm:auto_preload", true).First(&security, "token = ?", token).Error; gorm.IsRecordNotFoundError(err) {
 		framework.RespondError(w, http.StatusUnauthorized, err.Error())
