@@ -12,8 +12,8 @@ import (
 
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
-	"github.com/xubiosueldos/autenticacion/publico"
 	"github.com/xubiosueldos/conexionBD"
+	"github.com/xubiosueldos/conexionBD/Autenticacion/structAutenticacion"
 	"github.com/xubiosueldos/conexionBD/apiclientconexionbd"
 	"github.com/xubiosueldos/framework"
 	"github.com/xubiosueldos/framework/configuracion"
@@ -21,7 +21,7 @@ import (
 
 //var db *gorm.DB
 var err error
-var errors publico.Error
+var errors structAutenticacion.Error
 
 // Sirve para controlar si el server esta OK
 func Healthy(writer http.ResponseWriter, request *http.Request) {
@@ -52,6 +52,13 @@ func Login(w http.ResponseWriter, r *http.Request) {
 
 		security := insertarTokenSecurity(tokenDecode, w)
 
+		db := conexionBD.ObtenerDB(security.Tenant)
+		err = apiclientconexionbd.AutomigrateTablasPrivadas(db)
+		if err != nil {
+			fmt.Println("Error: ", err)
+		}
+		defer conexionBD.CerrarDB(db)
+
 		framework.RespondJSON(w, http.StatusOK, security)
 
 	} else {
@@ -65,11 +72,11 @@ func Logout(w http.ResponseWriter, r *http.Request) {
 
 	token := obtenerTokenHeader(r)
 
-	db := conexionBD.ConnectBD("security")
+	db := conexionBD.ObtenerDB("security")
 	//defer db.Close()
-	defer apiclientconexionbd.CerrarDB(db)
+	defer conexionBD.CerrarDB(db)
 
-	if err := db.Unscoped().Where("token = ?", token).Delete(publico.Security{}).Error; err != nil {
+	if err := db.Unscoped().Where("token = ?", token).Delete(structAutenticacion.Security{}).Error; err != nil {
 
 		framework.RespondError(w, http.StatusInternalServerError, err.Error())
 		return
@@ -132,11 +139,11 @@ func chequeoAuthenticationMonolitico(tokenEncode string, r *http.Request) bool {
 	return infoUserValida
 }
 
-func insertarTokenSecurity(tokenDecode []byte, w http.ResponseWriter) *publico.Security {
+func insertarTokenSecurity(tokenDecode []byte, w http.ResponseWriter) *structAutenticacion.Security {
 
-	db := conexionBD.ConnectBD("security")
+	db := conexionBD.ObtenerDB("security")
 	//defer db.Close()
-	defer apiclientconexionbd.CerrarDB(db)
+	defer conexionBD.CerrarDB(db)
 
 	infoUser := s.Split(string(tokenDecode), ":")
 
@@ -149,7 +156,7 @@ func insertarTokenSecurity(tokenDecode []byte, w http.ResponseWriter) *publico.S
 
 	fecha := time.Now()
 
-	security := publico.Security{Username: username, Tenant: tenant, Token: token, FechaCreacion: fecha}
+	security := structAutenticacion.Security{Username: username, Tenant: tenant, Token: token, FechaCreacion: fecha}
 
 	if err := db.Create(&security).Error; err != nil {
 		framework.RespondError(w, http.StatusInternalServerError, err.Error())
@@ -158,14 +165,14 @@ func insertarTokenSecurity(tokenDecode []byte, w http.ResponseWriter) *publico.S
 
 	return &security
 }
-func checkTokenDB(w http.ResponseWriter, token string) (*publico.Security, bool, error) {
+func checkTokenDB(w http.ResponseWriter, token string) (*structAutenticacion.Security, bool, error) {
 
 	var existeToken bool = true
-	var security publico.Security
+	var security structAutenticacion.Security
 	var err error = nil
 
-	db := conexionBD.ConnectBD("security")
-	defer apiclientconexionbd.CerrarDB(db)
+	db := conexionBD.ObtenerDB("security")
+	defer conexionBD.CerrarDB(db)
 
 	if err = db.Set("gorm:auto_preload", true).First(&security, "token = ?", token).Error; gorm.IsRecordNotFoundError(err) {
 		framework.RespondError(w, http.StatusUnauthorized, err.Error())
