@@ -10,14 +10,14 @@ import (
 
 	"github.com/xubiosueldos/framework/configuracion"
 
-	"github.com/xubiosueldos/autenticacion/publico"
+	"github.com/xubiosueldos/conexionBD/Autenticacion/structAutenticacion"
 	"github.com/xubiosueldos/framework"
 )
 
-func CheckTokenValidoConMicroservicioAutenticacion(r *http.Request) (*publico.Security, *publico.Error) {
+func CheckTokenValidoConMicroservicioAutenticacion(r *http.Request) (*structAutenticacion.Security, *structAutenticacion.Error) {
 
-	var tokenAutenticacion *publico.Security
-	var tokenError *publico.Error
+	var tokenAutenticacion *structAutenticacion.Security
+	var tokenError *structAutenticacion.Error
 	config := configuracion.GetInstance()
 	url := configuracion.GetUrlMicroservicio(config.Puertomicroservicioautenticacion) + "auth/check-token"
 
@@ -48,11 +48,11 @@ func CheckTokenValidoConMicroservicioAutenticacion(r *http.Request) (*publico.Se
 	if res.StatusCode != http.StatusUnauthorized {
 
 		// tokenAutenticacion = &(TokenAutenticacion{})
-		tokenAutenticacion = new(publico.Security)
+		tokenAutenticacion = new(structAutenticacion.Security)
 		json.Unmarshal([]byte(string(body)), tokenAutenticacion)
 
 	} else {
-		tokenError = new(publico.Error)
+		tokenError = new(structAutenticacion.Error)
 		errorrespuesta := s.Split(res.Status, " ")
 		tokenError.ErrorNombre = errorrespuesta[1]
 		tokenError.ErrorCodigo = res.StatusCode
@@ -63,13 +63,13 @@ func CheckTokenValidoConMicroservicioAutenticacion(r *http.Request) (*publico.Se
 	return tokenAutenticacion, tokenError
 }
 
-func ErrorToken(w http.ResponseWriter, tokenError *publico.Error) {
+func ErrorToken(w http.ResponseWriter, tokenError *structAutenticacion.Error) {
 	errorToken := *tokenError
 	framework.RespondError(w, errorToken.ErrorCodigo, errorToken.ErrorNombre)
 
 }
 
-func CheckTokenValido(w http.ResponseWriter, r *http.Request) (bool, *publico.Security) {
+func CheckTokenValido(w http.ResponseWriter, r *http.Request) (bool, *structAutenticacion.Security) {
 	var tokenValido bool = true
 	tokenAutenticacion, tokenError := CheckTokenValidoConMicroservicioAutenticacion(r)
 
@@ -81,7 +81,7 @@ func CheckTokenValido(w http.ResponseWriter, r *http.Request) (bool, *publico.Se
 	return tokenValido, tokenAutenticacion
 }
 
-func ObtenerTenant(tokenAutenticacion *publico.Security) string {
+func ObtenerTenant(tokenAutenticacion *structAutenticacion.Security) string {
 
 	token := *tokenAutenticacion
 	tenant := token.Tenant
