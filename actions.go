@@ -1,7 +1,6 @@
 package main
 
 import (
-	"crypto/tls"
 	"encoding/base64"
 	"fmt"
 	"math/rand"
@@ -17,6 +16,7 @@ import (
 	"github.com/xubiosueldos/conexionBD/apiclientconexionbd"
 	"github.com/xubiosueldos/framework"
 	"github.com/xubiosueldos/framework/configuracion"
+	"github.com/xubiosueldos/monoliticComunication"
 )
 
 //var db *gorm.DB
@@ -36,7 +36,8 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	configuracion := configuracion.GetInstance()
 
 	if configuracion.Checkmonolitico == true {
-		datosCorrectos = chequeoAuthenticationMonolitico(tokenEncode, r)
+
+		datosCorrectos = monoliticComunication.CheckAuthenticationMonolitico(tokenEncode, r)
 	}
 	//Chequear con el monolitico que los datos ingresados sean correctos
 	if datosCorrectos {
@@ -100,43 +101,6 @@ func CheckToken(w http.ResponseWriter, r *http.Request) {
 		framework.RespondError(w, http.StatusUnauthorized, err.Error())
 		return
 	}
-}
-
-func chequeoAuthenticationMonolitico(tokenEncode string, r *http.Request) bool {
-
-	infoUserValida := false
-	http.DefaultTransport.(*http.Transport).TLSClientConfig = &tls.Config{InsecureSkipVerify: true}
-
-	var prueba []byte = []byte("xubiosueldosimplementadocongo")
-	tokenSecurity := base64.StdEncoding.EncodeToString(prueba)
-
-	url := configuracion.GetUrlMonolitico() + "SecurityAuthenticationGo"
-
-	req, err := http.NewRequest("GET", url, nil)
-
-	if err != nil {
-		fmt.Println("Error: ", err)
-	}
-
-	req.Header.Set("Content-Type", "application/x-www-form-urlencoded; charset=utf-8")
-	req.Header.Add("Authorization", tokenEncode)
-	req.Header.Add("SecurityToken", tokenSecurity)
-
-	client := &http.Client{}
-
-	res, err := client.Do(req)
-
-	if err != nil {
-		fmt.Println("Error: ", err)
-	}
-
-	defer res.Body.Close()
-
-	if res.StatusCode == http.StatusAccepted {
-		infoUserValida = true
-	}
-
-	return infoUserValida
 }
 
 func insertarTokenSecurity(tokenDecode []byte, w http.ResponseWriter) *structAutenticacion.Security {
