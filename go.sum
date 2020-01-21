@@ -166,6 +166,8 @@ github.com/xubiosueldos/conexionBD v0.0.0-20191218134825-6192e73ee9b4 h1:HF8xAta
 github.com/xubiosueldos/conexionBD v0.0.0-20191218134825-6192e73ee9b4/go.mod h1:jeo57E+wvI5Q21kKt/DhqL0fWzFNOuU5xlsmtO504zg=
 github.com/xubiosueldos/conexionBD v0.0.0-20191218183106-2b3f2d712e9b h1:vnf1K9zdMzsOSihq7uUwQ3mpqlyJMdG782T+7Ps6ZWY=
 github.com/xubiosueldos/conexionBD v0.0.0-20191218183106-2b3f2d712e9b/go.mod h1:jeo57E+wvI5Q21kKt/DhqL0fWzFNOuU5xlsmtO504zg=
+github.com/xubiosueldos/conexionBD v0.0.0-20200121135427-21ff5d652690 h1:ZJ8kTKVLIHDTe382KvD6Dj2Tk/19fB5cgwmjGNP6zUw=
+github.com/xubiosueldos/conexionBD v0.0.0-20200121135427-21ff5d652690/go.mod h1:EfsxARhkjHg9kvDCMrdvhN/0fCo+OYyFwg1LOuvYrjY=
 github.com/xubiosueldos/framework v0.0.0-20190502133422-d53dd93b5196 h1:SA+m66fK0NXhrVbj4pvXj/KEjbtxq+IyzdEWjsOm0Lw=
 github.com/xubiosueldos/framework v0.0.0-20190502133422-d53dd93b5196/go.mod h1:txPj3GVjVoZeJnObRIBrzNFVDT7baf2VEpK3kCkpDWg=
 github.com/xubiosueldos/framework v0.0.0-20190509132521-6f92aa67ddd1/go.mod h1:txPj3GVjVoZeJnObRIBrzNFVDT7baf2VEpK3kCkpDWg=
@@ -189,6 +191,8 @@ github.com/xubiosueldos/framework v0.0.0-20190923130327-27a81bc804ce h1:5Lxe2+4C
 github.com/xubiosueldos/framework v0.0.0-20190923130327-27a81bc804ce/go.mod h1:Atdymo+Iri+Mn8+VPhqIyb6dW/S/q3xPgobPRPBirzs=
 github.com/xubiosueldos/framework v0.0.0-20191002111857-52b12ef56c62 h1:39700bnGzWF139TDjBPFLMICs+1Tk306RVSjp1KCkEw=
 github.com/xubiosueldos/framework v0.0.0-20191002111857-52b12ef56c62/go.mod h1:YpPF+hDR5I/7906gpS7Tjz+/wJX5KJCVyUDAWXeeOds=
+github.com/xubiosueldos/framework v0.0.0-20191217163734-c7c2b5e645ef h1:dooDp5cqj4m9RM2P6bLuImAt2AK4JCgD67BPxLYS8EM=
+github.com/xubiosueldos/framework v0.0.0-20191217163734-c7c2b5e645ef/go.mod h1:YpPF+hDR5I/7906gpS7Tjz+/wJX5KJCVyUDAWXeeOds=
 github.com/xubiosueldos/monoliticComunication v0.0.0-20190930140150-f3011c0734b4 h1:JKt9jMLvGi+/1XkHz7ybI2kwhd6m6OAS7FVnz4V6uzM=
 github.com/xubiosueldos/monoliticComunication v0.0.0-20190930151502-4b7796f8d311 h1:MzN8InXCEuYGJcRcv3mAw/BW2nVtAHstAhFkp6arHyk=
 github.com/xubiosueldos/monoliticComunication v0.0.0-20190930151502-4b7796f8d311/go.mod h1:mBGhKMUluOMFdHIvRznFd7Nqoe3feesk11q1QI8ImRI=
