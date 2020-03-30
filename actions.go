@@ -54,10 +54,15 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		security := insertarTokenSecurity(tokenDecode, w)
 
 		db := conexionBD.ObtenerDB(security.Tenant)
-		err = apiclientconexionbd.AutomigrateTablasPrivadas(db)
+		tx := db.Begin()
+		err = apiclientconexionbd.AutomigrateTablasPrivadas(tx)
 		if err != nil {
-			fmt.Println("Error: ", err)
+			tx.Rollback()
+			fmt.Println("Error Automigrate Tablas Privadas: ", err)
+			framework.RespondError(w, http.StatusNotFound, framework.ErrorAutomigrate)
+			return
 		}
+		tx.Commit()
 		defer conexionBD.CerrarDB(db)
 
 		framework.RespondJSON(w, http.StatusOK, security)
