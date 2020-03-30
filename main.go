@@ -15,14 +15,11 @@ func main() {
 	configuracion := configuracion.GetInstance()
 
 	dbPublic := conexionBD.ObtenerDB("public")
-	txPublic := dbPublic.Begin()
-	err = apiclientconexionbd.AutomigrateTablasPublicas(txPublic)
+	err = apiclientconexionbd.AutomigrateTablasPublicas(dbPublic)
 	if err != nil {
-		txPublic.Rollback()
 		fmt.Println("Error Public Automigrate: ", err)
 		return
 	}
-	txPublic.Commit()
 	conexionBD.CerrarDB(dbPublic)
 
 	dbSecurity := conexionBD.ObtenerDB("security")
