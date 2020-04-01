@@ -14,18 +14,24 @@ func main() {
 	var err error
 	configuracion := configuracion.GetInstance()
 
-	db_public := conexionBD.ObtenerDB("public")
-	err = apiclientconexionbd.AutomigrateTablasPublicas(db_public)
+	dbPublic := conexionBD.ObtenerDB("public")
+	err = apiclientconexionbd.AutomigrateTablasPublicas(dbPublic)
 	if err != nil {
-		fmt.Println("Error: ", err)
+		fmt.Println("Error Public Automigrate: ", err)
+		return
 	}
-	conexionBD.CerrarDB(db_public)
+	conexionBD.CerrarDB(dbPublic)
 
-	db := conexionBD.ObtenerDB("security")
-	err = apiclientconexionbd.AutomigrateTablaSecurity(db)
+	dbSecurity := conexionBD.ObtenerDB("security")
+	txSecurity := dbSecurity.Begin()
+	err = apiclientconexionbd.AutomigrateTablaSecurity(txSecurity)
 	if err != nil {
-		fmt.Println("Error: ", err)
+		txSecurity.Rollback()
+		fmt.Println("Error Security Automigrate: ", err)
+		return
 	}
+	txSecurity.Commit()
+	conexionBD.CerrarDB(dbSecurity)
 
 	router := newRouter()
 
