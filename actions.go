@@ -54,6 +54,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		security := insertarTokenSecurity(tokenDecode, w)
 
 		db := conexionBD.ObtenerDB(security.Tenant)
+		defer conexionBD.CerrarDB(db)
 		// tx := db.Begin()
 		err = apiclientconexionbd.AutomigrateTablasPrivadas(db)
 		if err != nil {
@@ -63,7 +64,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		// tx.Commit()
-		defer conexionBD.CerrarDB(db)
+
 
 		framework.RespondJSON(w, http.StatusOK, security)
 
