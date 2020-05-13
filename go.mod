@@ -5,7 +5,7 @@ go 1.12
 require (
 	github.com/gorilla/mux v1.7.2
 	github.com/jinzhu/gorm v1.9.8
-	github.com/xubiosueldos/conexionBD v0.0.0-20200425212538-71d07b58812a
-	github.com/xubiosueldos/framework v0.0.0-20200327232331-2ef9abb83842
-	github.com/xubiosueldos/monoliticComunication v0.0.0-20191028102914-d680e5cb199d
+	github.com/xubiosueldos/conexionBD v1.1.8
+	github.com/xubiosueldos/framework v1.1.2
+	github.com/xubiosueldos/monoliticComunication v1.1.0
 )
