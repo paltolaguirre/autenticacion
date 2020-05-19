@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/jinzhu/gorm"
 	"log"
 	"net/http"
 
@@ -15,7 +16,7 @@ func main() {
 	configuracion := configuracion.GetInstance()
 
 	dbPublic := conexionBD.ObtenerDB("public")
-	err = apiclientconexionbd.AutomigrateTablasPublicas(dbPublic)
+	err, actualizo := apiclientconexionbd.AutomigrateTablasPublicas(dbPublic)
 	if err != nil {
 		fmt.Println("Error Public Automigrate: ", err)
 		return
@@ -24,12 +25,18 @@ func main() {
 
 	dbSecurity := conexionBD.ObtenerDB("security")
 	txSecurity := dbSecurity.Begin()
+
 	err = apiclientconexionbd.AutomigrateTablaSecurity(txSecurity)
 	if err != nil {
 		txSecurity.Rollback()
 		fmt.Println("Error Security Automigrate: ", err)
 		return
 	}
+
+	if actualizo {
+		cleanConnections(txSecurity)
+	}
+
 	txSecurity.Commit()
 	conexionBD.CerrarDB(dbSecurity)
 
@@ -39,4 +46,8 @@ func main() {
 
 	log.Fatal(server)
 
+}
+
+func cleanConnections(db *gorm.DB)  {
+	db.Exec("update security set necesitaupdate = true")
 }
