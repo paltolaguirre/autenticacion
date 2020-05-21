@@ -66,17 +66,17 @@ BEGIN
 	(-62, current_timestamp,'Incrementos no remunerativos (con aportes y contribuciones OS)', '540000', 'Incrementos no remunerativos (con aportes y contribuciones OS)', 1, -2),
 	(-63, current_timestamp,'Importes no remunerativos especiales', '550000', 'Importes no remunerativos especiales', 1, -2),
 	(-64, current_timestamp,'Redondeo (No Remunerativo)', '799999', 'Redondeo (No Remunerativo)', 1, -2),
-	(-65, current_timestamp,'Sistema previsional', '810000', 'Sistema previsional', 1, -3),
-	(-66, current_timestamp,'INSSJyP', '810001', 'INSSJyP', 1, -3),
-	(-67, current_timestamp,'Obra Social', '810002', 'Obra Social', 1, -3),
+	(-65, current_timestamp,'Sistema previsional', '810000', 'Sistema previsional', 1, -4),
+	(-66, current_timestamp,'INSSJyP', '810001', 'INSSJyP', 1, -4),
+	(-67, current_timestamp,'Obra Social', '810002', 'Obra Social', 1, -4),
 	(-68, current_timestamp,'Fondo Solidario de Redistribucion (ex ANSSAL)', '810003', 'Fondo Solidario de Redistribucion (ex ANSSAL)', 1, -3),
-	(-69, current_timestamp,'Cuota Sindical', '810004', 'Cuota Sindical', 1, -3),
-	(-70, current_timestamp,'Seguro de Vida', '810005', 'Seguro de Vida', 1, -3),
-	(-71, current_timestamp,'RENATEA (ex RENATRE)', '810006', 'RENATEA (ex RENATRE)', 1, -3),
-	(-72, current_timestamp,'Prestamos', '810007', 'Prestamos', 1, -3),
-	(-73, current_timestamp,'Impuesto a las Ganancias', '810008', 'Impuesto a las Ganancias', 1, -3),
-	(-74, current_timestamp,'Obra Social - Adherentes', '810009', 'Obra Social - Adherentes', 1, -3),
-	(-75, current_timestamp,'Fondo Solidario de Redistribucion (ex ANSSAL) - Adherentes', '810010', 'Fondo Solidario de Redistribucion (ex ANSSAL) - Adherentes', 1, -3),
-	(-76, current_timestamp,'Otros descuentos', '820000', 'Otros descuentos', 1, -3);
+	(-69, current_timestamp,'Cuota Sindical', '810004', 'Cuota Sindical', 1, -4),
+	(-70, current_timestamp,'Seguro de Vida', '810005', 'Seguro de Vida', 1, -4),
+	(-71, current_timestamp,'RENATEA (ex RENATRE)', '810006', 'RENATEA (ex RENATRE)', 1, -4),
+	(-72, current_timestamp,'Prestamos', '810007', 'Prestamos', 1, -4),
+	(-73, current_timestamp,'Impuesto a las Ganancias', '810008', 'Impuesto a las Ganancias', 1, -4),
+	(-74, current_timestamp,'Obra Social - Adherentes', '810009', 'Obra Social - Adherentes', 1, -4),
+	(-75, current_timestamp,'Fondo Solidario de Redistribucion (ex ANSSAL) - Adherentes', '810010', 'Fondo Solidario de Redistribucion (ex ANSSAL) - Adherentes', 1, -4),
+	(-76, current_timestamp,'Otros descuentos', '820000', 'Otros descuentos', 1, -4);
 END;
 $$;
