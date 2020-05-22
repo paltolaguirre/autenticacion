@@ -2,6 +2,8 @@ package main
 
 import (
 	"fmt"
+	"github.com/jinzhu/gorm"
+	"github.com/xubiosueldos/conexionBD/Autenticacion/structAutenticacion"
 	"log"
 	"net/http"
 
@@ -15,7 +17,7 @@ func main() {
 	configuracion := configuracion.GetInstance()
 
 	dbPublic := conexionBD.ObtenerDB("public")
-	err = apiclientconexionbd.AutomigrateTablasPublicas(dbPublic)
+	err, actualizoMicro := apiclientconexionbd.AutomigrateTablasPublicas(dbPublic)
 	if err != nil {
 		fmt.Println("Error Public Automigrate: ", err)
 		return
@@ -24,12 +26,18 @@ func main() {
 
 	dbSecurity := conexionBD.ObtenerDB("security")
 	txSecurity := dbSecurity.Begin()
-	err = apiclientconexionbd.AutomigrateTablaSecurity(txSecurity)
+
+	err, actualizoSecurity := apiclientconexionbd.AutomigrateTablaSecurity(txSecurity)
 	if err != nil {
 		txSecurity.Rollback()
 		fmt.Println("Error Security Automigrate: ", err)
 		return
 	}
+
+	if actualizoMicro || actualizoSecurity {
+		cleanConnections(txSecurity)
+	}
+
 	txSecurity.Commit()
 	conexionBD.CerrarDB(dbSecurity)
 
@@ -39,4 +47,8 @@ func main() {
 
 	log.Fatal(server)
 
+}
+
+func cleanConnections(db *gorm.DB)  {
+	db.Model(&structAutenticacion.Security{}).Update("necesitaupdate", true)
 }
