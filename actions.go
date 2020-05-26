@@ -141,12 +141,30 @@ func checkTokenDB(w http.ResponseWriter, token string) (*structAutenticacion.Sec
 	var security structAutenticacion.Security
 	var err error = nil
 
-	db := conexionBD.ObtenerDB("security")
-	defer conexionBD.CerrarDB(db)
+	dbSecurity := conexionBD.ObtenerDB("security")
+	defer conexionBD.CerrarDB(dbSecurity)
 
-	if err = db.Set("gorm:auto_preload", true).First(&security, "token = ?", token).Error; gorm.IsRecordNotFoundError(err) {
+	if err = dbSecurity.Set("gorm:auto_preload", true).First(&security, "token = ?", token).Error; gorm.IsRecordNotFoundError(err) {
 		framework.RespondError(w, http.StatusUnauthorized, err.Error())
 		existeToken = false
+	}
+
+	if security.Necesitaupdate {
+		dbTenant := conexionBD.ObtenerDB(security.Tenant)
+		defer conexionBD.CerrarDB(dbTenant)
+		err = apiclientconexionbd.AutomigrateTablasPrivadas(dbTenant)
+		if err != nil {
+			// tx.Rollback()
+			fmt.Println("Error Automigrate Tablas Privadas: ", err)
+			framework.RespondError(w, http.StatusNotFound, framework.ErrorAutomigrate)
+			if err := dbSecurity.Unscoped().Where("token = ?", token).Delete(structAutenticacion.Security{}).Error; err != nil {
+				framework.RespondError(w, http.StatusInternalServerError, err.Error())
+			}
+			existeToken = false
+		} else {
+			dbSecurity.Model(&security).Where("token = ?", token).Update("necesitaupdate", false)
+		}
+
 	}
 
 	return &security, existeToken, err
