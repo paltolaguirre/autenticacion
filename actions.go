@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/base64"
-	"fmt"
 	"math/rand"
 	"net/http"
 	"strconv"
@@ -13,7 +12,6 @@ import (
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 	"github.com/xubiosueldos/conexionBD"
 	"github.com/xubiosueldos/conexionBD/Autenticacion/structAutenticacion"
-	"github.com/xubiosueldos/conexionBD/apiclientconexionbd"
 	"github.com/xubiosueldos/framework"
 	"github.com/xubiosueldos/framework/configuracion"
 	"github.com/xubiosueldos/monoliticComunication"
@@ -21,7 +19,6 @@ import (
 
 //var db *gorm.DB
 var err error
-var errors structAutenticacion.Error
 
 // Sirve para controlar si el server esta OK
 func Healthy(writer http.ResponseWriter, request *http.Request) {
@@ -53,18 +50,11 @@ func Login(w http.ResponseWriter, r *http.Request) {
 
 		security := insertarTokenSecurity(tokenDecode, w)
 
-		db := conexionBD.ObtenerDB(security.Tenant)
-		defer conexionBD.CerrarDB(db)
-		// tx := db.Begin()
-		err = apiclientconexionbd.AutomigrateTablasPrivadas(db)
+		err = Actualizar(security)
 		if err != nil {
-			// tx.Rollback()
-			fmt.Println("Error Automigrate Tablas Privadas: ", err)
-			framework.RespondError(w, http.StatusNotFound, framework.ErrorAutomigrate)
+			framework.RespondError(w, http.StatusInternalServerError, err.Error())
 			return
 		}
-		// tx.Commit()
-
 
 		framework.RespondJSON(w, http.StatusOK, security)
 
@@ -126,7 +116,7 @@ func insertarTokenSecurity(tokenDecode []byte, w http.ResponseWriter) *structAut
 
 	fecha := time.Now()
 
-	security := structAutenticacion.Security{Username: username, Tenant: tenant, Token: token, FechaCreacion: fecha}
+	security := structAutenticacion.Security{Username: username, Tenant: tenant, Token: token, FechaCreacion: fecha, Necesitaupdate: true}
 
 	if err := db.Create(&security).Error; err != nil {
 		framework.RespondError(w, http.StatusInternalServerError, err.Error())
@@ -137,7 +127,6 @@ func insertarTokenSecurity(tokenDecode []byte, w http.ResponseWriter) *structAut
 }
 func checkTokenDB(w http.ResponseWriter, token string) (*structAutenticacion.Security, bool, error) {
 
-	var existeToken bool = true
 	var security structAutenticacion.Security
 	var err error = nil
 
@@ -145,29 +134,17 @@ func checkTokenDB(w http.ResponseWriter, token string) (*structAutenticacion.Sec
 	defer conexionBD.CerrarDB(dbSecurity)
 
 	if err = dbSecurity.Set("gorm:auto_preload", true).First(&security, "token = ?", token).Error; gorm.IsRecordNotFoundError(err) {
-		framework.RespondError(w, http.StatusUnauthorized, err.Error())
-		existeToken = false
+		return nil, false, err
 	}
 
 	if security.Necesitaupdate {
-		dbTenant := conexionBD.ObtenerDB(security.Tenant)
-		defer conexionBD.CerrarDB(dbTenant)
-		err = apiclientconexionbd.AutomigrateTablasPrivadas(dbTenant)
+		err = Actualizar(&security)
 		if err != nil {
-			// tx.Rollback()
-			fmt.Println("Error Automigrate Tablas Privadas: ", err)
-			framework.RespondError(w, http.StatusNotFound, framework.ErrorAutomigrate)
-			if err := dbSecurity.Unscoped().Where("token = ?", token).Delete(structAutenticacion.Security{}).Error; err != nil {
-				framework.RespondError(w, http.StatusInternalServerError, err.Error())
-			}
-			existeToken = false
-		} else {
-			dbSecurity.Model(&security).Where("token = ?", token).Update("necesitaupdate", false)
+			return nil, false, err
 		}
-
 	}
 
-	return &security, existeToken, err
+	return &security, true, err
 }
 
 func obtenerTokenHeader(r *http.Request) string {
@@ -179,3 +156,4 @@ func obtenerTokenHeader(r *http.Request) string {
 	return token
 
 }
+
