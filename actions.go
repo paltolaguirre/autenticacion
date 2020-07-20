@@ -157,13 +157,10 @@ func obtenerTokenHeader(r *http.Request) string {
 
 }
 
-
 func LoginWithNoCheck(w http.ResponseWriter, r *http.Request) {
 
 	tokenEncode := obtenerTokenHeader(r)
 	configuracion := configuracion.GetInstance()
-
-
 
 	tokenDecode, err := base64.StdEncoding.DecodeString(tokenEncode)
 
@@ -191,6 +188,4 @@ func LoginWithNoCheck(w http.ResponseWriter, r *http.Request) {
 
 	framework.RespondJSON(w, http.StatusOK, security)
 
-
 }
-
