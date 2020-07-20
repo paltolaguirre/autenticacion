@@ -51,4 +51,10 @@ var routes = Routes{
 		"/api/auth/check-token",
 		CheckToken,
 	},
+	Route{
+		"LoginWithNoCheck",
+		"POST",
+		"/api/auth/login-with-no-check",
+		LoginWithNoCheck,
+	},
 }

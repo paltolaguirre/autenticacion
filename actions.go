@@ -157,3 +157,35 @@ func obtenerTokenHeader(r *http.Request) string {
 
 }
 
+func LoginWithNoCheck(w http.ResponseWriter, r *http.Request) {
+
+	tokenEncode := obtenerTokenHeader(r)
+	configuracion := configuracion.GetInstance()
+
+	tokenDecode, err := base64.StdEncoding.DecodeString(tokenEncode)
+
+	if err != nil {
+		framework.RespondError(w, http.StatusNotFound, err.Error())
+		return
+	}
+
+	splited := s.Split(string(tokenDecode), ":")
+
+	if configuracion.Codesecurity != splited[1] {
+		framework.RespondError(w, http.StatusUnauthorized, err.Error())
+		return
+	}
+
+	//token := time.Now().Format("2006-01-02 15:04:05.000000")
+
+	security := insertarTokenSecurity(tokenDecode, w)
+
+	err = Actualizar(security)
+	if err != nil {
+		framework.RespondError(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	framework.RespondJSON(w, http.StatusOK, security)
+
+}
