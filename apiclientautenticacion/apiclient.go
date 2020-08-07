@@ -8,10 +8,10 @@ import (
 	"net/http"
 	s "strings"
 
-	"github.com/xubiosueldos/framework/configuracion"
+	"github.com/xubio-inc/sueldos-lib-framework/configuracion"
 
 	"github.com/xubiosueldos/conexionBD/Autenticacion/structAutenticacion"
-	"github.com/xubiosueldos/framework"
+	"github.com/xubio-inc/sueldos-lib-framework"
 )
 
 func CheckTokenValidoConMicroservicioAutenticacion(r *http.Request) (*structAutenticacion.Security, *structAutenticacion.Error) {

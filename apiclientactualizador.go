@@ -7,7 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/xubiosueldos/conexionBD/Autenticacion/structAutenticacion"
-	"github.com/xubiosueldos/framework/configuracion"
+	"github.com/xubio-inc/sueldos-lib-framework/configuracion"
 	"io/ioutil"
 	"net/http"
 )
