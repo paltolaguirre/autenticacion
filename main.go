@@ -6,7 +6,7 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/xubiosueldos/framework/configuracion"
+	"github.com/xubio-inc/sueldos-lib-framework/configuracion"
 )
 
 func main() {
