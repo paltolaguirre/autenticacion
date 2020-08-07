@@ -29,6 +29,8 @@ phases:
       # Building App
       - echo Build App started on `date`
       - export GO111MODULE=on
+      - git config --global url."https://$PERSONAL_TOKEN:x-oauth-basic@github.com/xubio-inc".insteadOf "https://github.com/xubio-inc"
+      - go env -w GOPRIVATE="github.com/xubio-inc"
       - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -tags netgo -ldflags '-w' -o main *.go
       # Building Docker image
       - echo Building Docker image...
