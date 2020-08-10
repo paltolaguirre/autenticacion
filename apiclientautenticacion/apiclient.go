@@ -10,7 +10,7 @@ import (
 
 	"github.com/xubio-inc/sueldos-lib-framework/configuracion"
 
-	"github.com/xubiosueldos/conexionBD/Autenticacion/structAutenticacion"
+	"github.com/xubio-inc/sueldos-lib-conexionBD/Autenticacion/structAutenticacion"
 	"github.com/xubio-inc/sueldos-lib-framework"
 )
 
