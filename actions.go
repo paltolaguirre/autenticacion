@@ -10,8 +10,8 @@ import (
 
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
-	"github.com/xubiosueldos/conexionBD"
-	"github.com/xubiosueldos/conexionBD/Autenticacion/structAutenticacion"
+	"github.com/xubio-inc/sueldos-lib-conexionBD"
+	"github.com/xubio-inc/sueldos-lib-conexionBD/Autenticacion/structAutenticacion"
 	"github.com/xubio-inc/sueldos-lib-framework"
 	"github.com/xubio-inc/sueldos-lib-framework/configuracion"
 	"github.com/xubiosueldos/monoliticComunication"

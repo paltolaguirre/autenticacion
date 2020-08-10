@@ -6,7 +6,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/xubiosueldos/conexionBD/Autenticacion/structAutenticacion"
+	"github.com/xubio-inc/sueldos-lib-conexionBD/Autenticacion/structAutenticacion"
 	"github.com/xubio-inc/sueldos-lib-framework/configuracion"
 	"io/ioutil"
 	"net/http"

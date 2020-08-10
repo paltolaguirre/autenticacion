@@ -2,7 +2,7 @@ package main
 
 import (
 	"github.com/jinzhu/gorm"
-	"github.com/xubiosueldos/conexionBD/Autenticacion/structAutenticacion"
+	"github.com/xubio-inc/sueldos-lib-conexionBD/Autenticacion/structAutenticacion"
 	"log"
 	"net/http"
 
