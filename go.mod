@@ -7,5 +7,5 @@ require (
 	github.com/jinzhu/gorm v1.9.8
 	github.com/xubio-inc/sueldos-lib-conexionBD v1.3.2
 	github.com/xubio-inc/sueldos-lib-framework v1.1.5
-	github.com/xubiosueldos/monoliticComunication v1.2.1
+	github.com/xubio-inc/sueldos-lib-monolitico v1.2.2
 )
